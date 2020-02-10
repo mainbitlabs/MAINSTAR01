@@ -3,53 +3,28 @@
 
 const { ActivityHandler } = require('botbuilder');
 
-class Bot extends ActivityHandler {
-    /**
-     *
-     * @param {ConversationState} conversationState
-     * @param {UserState} userState
-     * @param {Dialog} dialog
-     * @param {any} logger object for logging events, defaults to console if none is provided
-     */
-    constructor(conversationState, userState, dialog, logger) {
+class EchoBot extends ActivityHandler {
+    constructor() {
         super();
-        if (!conversationState) throw new Error('[Bot]: Missing parameter. conversationState is required');
-        if (!userState) throw new Error('[Bot]: Missing parameter. userState is required');
-        if (!dialog) throw new Error('[Bot]: Missing parameter. dialog is required');
-        if (!logger) {
-            logger = console;
-            logger.log('[Bot]: logger not passed in, defaulting to console');
-        }
-
-        this.conversationState = conversationState;
-        this.userState = userState;
-        this.dialog = dialog;
-        this.logger = logger;
-        this.dialogState = this.conversationState.createProperty('DialogState');
-
+        // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
-            this.logger.log('Running dialog with Message Activity.');
+            await context.sendActivity(`You said '${ context.activity.text }'`);
 
-            // Run the Dialog with the new message Activity.
-            await this.dialog.run(context, this.dialogState);
-
-            // Save any state changes. The load happened during the execution of the Dialog.
-            await this.conversationState.saveChanges(context, false);
-            await this.userState.saveChanges(context, false);
-        
             // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
 
-        this.onDialog(async (context, next) => {
-            // Save any state changes. The load happened during the execution of the Dialog.
-            await this.conversationState.saveChanges(context, false);
-            await this.userState.saveChanges(context, false);
-
+        this.onMembersAdded(async (context, next) => {
+            const membersAdded = context.activity.membersAdded;
+            for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
+                if (membersAdded[cnt].id !== context.activity.recipient.id) {
+                    await context.sendActivity('Hello from GitHub');
+                }
+            }
             // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
     }
 }
 
-module.exports.Bot = Bot;
+module.exports.EchoBot = EchoBot;
