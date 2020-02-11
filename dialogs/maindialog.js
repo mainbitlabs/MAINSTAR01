@@ -37,6 +37,7 @@ class MainDialog extends CancelAndHelpDialog {
 
 async sucursalStep(step){
     console.log('[mainDialog]:sucursal');
+    console.log(step);
     await step.context.sendActivity('Recuerda que este bot tiene un tiempo limite de 10 minutos.');
     return await step.prompt(TEXT_PROMPT, `Por favor, **escribe el Número de Sucursal.**`);
 }
@@ -64,7 +65,7 @@ async choiceStep(step) {
         case 'Sí':
             return await step.prompt(CHOICE_PROMPT,{
                 prompt:'¿Qué deseas realizar?',
-                choices: ChoiceFactory.toChoices(['Check-In', 'Subir Fotos'])
+                choices: ChoiceFactory.toChoices(['Registro', 'Subir Fotos'])
             });
         case 'No':
             return await step.context.sendActivity('Se envía notificación a oficina central para la validación de la información');             
@@ -85,7 +86,7 @@ async choiceStep(step) {
                 'so you can try again!');
             return await step.endDialog();
         }
-        if (answer ==='Check-In') {
+        if (answer ==='Registro') {
 
             return await step.beginDialog(CHECKIN_DIALOG);
             
