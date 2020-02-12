@@ -19,6 +19,7 @@ class FotosDialog extends ComponentDialog {
         this.addDialog(new TextPrompt(TEXT_PROMPT));
         this.addDialog(new AttachmentPrompt(ATTACH_PROMPT));
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
+            // this.firstStep.bind(this),
             this.choiceStep.bind(this),
             this.adjuntaStep.bind(this),
             this.attachStep.bind(this),
@@ -28,13 +29,18 @@ class FotosDialog extends ComponentDialog {
 
     }
 
+    async firstStep(step) {
+    console.log('[FotosDialog]: firstStep');
+       
+        return await step.prompt(TEXT_PROMPT, "");
+    }
     async choiceStep(step) {
     console.log('[FotosDialog]: choiceStep');
-    var optsbutton = ['Foto 1', 'Foto 2', 'Foto 3', 'Foto 4'];
+    var optsbutton = ['Iniciar Actividad','Foto 1', 'Foto 2', 'Foto 3', 'Foto 4'];
     var Opts = {};
        
         return await step.prompt(CHOICE_PROMPT, {
-            prompt: '**Que foto quieres adjuntar.**',
+            prompt: '**Elige que desear realizar.**',
             choices: ChoiceFactory.toChoices(optsbutton)
         });
     }
@@ -44,6 +50,11 @@ class FotosDialog extends ComponentDialog {
         config.foto = photoAttach;
     
         switch (photoAttach) {
+            case 'Iniciar Actividad': 
+                return await step.prompt(CHOICE_PROMPT,{
+                    prompt:'**Toca el botón para indicar que vas a iniciar actividades.**',
+                    choices: ChoiceFactory.toChoices(['Iniciar Actividad'])
+                });
             case "Foto 1": 
                 return await step.prompt(ATTACH_PROMPT,`Adjunta aquí ${config.foto}`);
             
@@ -79,8 +90,12 @@ class FotosDialog extends ComponentDialog {
                 choices: ChoiceFactory.toChoices(['Sí','No'])
             });
         } else {
-            // Since no attachment was received, send an attachment to the user.
-            await step.context.sendActivity('Por favor envía una foto.');
+
+           const check = step.result.value;
+   config.check = check;
+    // console.log(config.solicitud);
+    await step.context.sendActivity(`Se guardo tu hora de inicio de actividades.`);
+    return await step.endDialog();
         }
 
     }
