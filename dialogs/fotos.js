@@ -26,7 +26,7 @@ class FotosDialog extends ComponentDialog {
             this.choiceStep.bind(this),
             this.adjuntaStep.bind(this),
             this.attachStep.bind(this),
-            this.dispatcherStep.bind(this),
+            this.dispatcherStep.bind(this)
         ]));
         this.initialDialogId = WATERFALL_DIALOG;
 
@@ -87,9 +87,9 @@ class FotosDialog extends ComponentDialog {
      * @param {Object} step
      */
     async attachStep(step) {
-        console.log('[FotosDialog]: attachStep');
+        console.log('[FotosDialog]: attachStep <<Inicia>>');
         const data = step.options;
-        console.log(data);
+        // console.log(data);
         
         // console.log(step.context.activity.attachments);
         
@@ -108,7 +108,7 @@ class FotosDialog extends ComponentDialog {
 
                         blobService.createBlockBlobFromText(config.blobcontainer, data.proyecto +'_'+ data.sucursal +'_'+ data.choice +'_'+ '.'+ ctype, buffer,  function(error, result, response) {
                             if (!error) {
-                                console.log("_Archivo subido al Blob Storage",response)
+                                console.log("_Archivo subido al Blob Storage")
                                 resolve();
                            }       
                            else{
@@ -128,6 +128,8 @@ class FotosDialog extends ComponentDialog {
                });
 
             await step.context.sendActivity(`La foto **${data.proyecto}_${data.sucursal}_${data.choice}** se ha subido correctamente`);
+            console.log('[FotosDialog]: attachStep <<Termina>>');
+            
             return await step.prompt(CHOICE_PROMPT, {
                 prompt: '¿Deseas adjuntar otra foto?',
                 choices: ChoiceFactory.toChoices(['Sí','No'])
@@ -169,11 +171,18 @@ class FotosDialog extends ComponentDialog {
     }
 
     async dispatcherStep(step) {
+        console.log('[FotosDialog]: dispatcherStep');
         const selection = step.result.value;
+        
+        const data = step.options;
+        console.log(data);
         switch (selection) {
             
             case 'Sí':
-                return await step.beginDialog(FOTOS_DIALOG);
+                console.log("Sí");
+                
+                // return await step.repromptDialog(FOTOS_DIALOG, data);
+                return await step.beginDialog(FOTOS_DIALOG, data);
             case 'No':
             await step.context.sendActivity('De acuerdo.');             
             // TERMINA EL DIÁLOGO
