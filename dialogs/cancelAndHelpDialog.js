@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 // var config = require('../config');
 const { ComponentDialog, DialogTurnStatus } = require('botbuilder-dialogs');
+const {ActivityTypes} = require ('botbuilder');
 
 /**
  * This base class watches for common phrases like "help" and "cancel" and takes action on them
@@ -25,19 +26,31 @@ class CancelAndHelpDialog extends ComponentDialog {
             const text = innerDc.context.activity.text.toLowerCase();
     
             switch (text) {
-                case 'que pex':
-                     await innerDc.context.sendActivity('Puedo ayudarte a consultar información de tu equipo');
-                     return { status: DialogTurnStatus.waiting };
+                case 'ayuda':
+                    const mainbit = { type: ActivityTypes.Message };
+                    mainbit.attachments = [this.getMainbit()];
+                    mainbit.text = 'Hola, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
+                    await innerDc.context.sendActivity(mainbit);
+                    return { status: DialogTurnStatus.waiting };
+                case 'starbucks':
+                    const sb = { type: ActivityTypes.Message };
+                   sb.attachments = [this.getStarbucks()];
+                    sb.text = 'Hola, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
+                    await innerDc.context.sendActivity(sb);
+                    return { status: DialogTurnStatus.waiting };
+                case 'bot':
+                    const bot = { type: ActivityTypes.Message };
+                   bot.attachments = [this.getBot()];
+                    bot.text = 'Hola humano, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
+                    await innerDc.context.sendActivity(bot);
+                    return { status: DialogTurnStatus.waiting };
                      
                 case 'cancel':
                 case 'cancelar':
                 case 'salir':
-                    
                     await innerDc.context.sendActivity('Cancelando...');
-                    config = {};
-                    console.log(config);
-                    
                     return await innerDc.cancelAllDialogs();
+
                 case 'help':
                 case '?':
                     await innerDc.context.sendActivity('[ This is where to send sample help to the user... ]');
@@ -45,6 +58,27 @@ class CancelAndHelpDialog extends ComponentDialog {
             }
         } else {
             
+        }
+    }
+    getBot(){
+        return {
+            name:'BOT',
+            contentType: 'image/jpg',
+            contentUrl: 'https://raw.githubusercontent.com/esanchezlMBT/images/master/BOT.gif'
+        }
+    }
+    getMainbit(){
+        return {
+            name:'mainbit',
+            contentType: 'image/jpg',
+            contentUrl: 'https://raw.githubusercontent.com/esanchezlMBT/images/master/mainbit.jpg'
+        }
+    }
+    getStarbucks(){
+        return {
+            name:'starbucks',
+            contentType: 'image/jpg',
+            contentUrl: 'https://raw.githubusercontent.com/esanchezlMBT/images/master/sb.png'
         }
     }
 }
