@@ -63,7 +63,7 @@ class CancelAndHelpDialog extends ComponentDialog {
     getBot(){
         return {
             name:'BOT',
-            contentType: 'image/jpg',
+            contentType: 'image/gif',
             contentUrl: 'https://raw.githubusercontent.com/esanchezlMBT/images/master/BOT.gif'
         }
     }
