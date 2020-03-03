@@ -1,4 +1,5 @@
 const config = require('../config');
+const nodeoutlook = require('nodejs-nodemailer-outlook');
 const azurest = require('azure-storage');
 const image2base64 = require('image-to-base64');
 const blobService = azurest.createBlobService(config.storageA,config.accessK);
@@ -185,7 +186,40 @@ class FotosDialog extends ComponentDialog {
                 return await step.beginDialog(FOTOS_DIALOG, data);
             case 'No':
             if (data.Rack == 'adjunto' && data.ticket == 'adjunto' && data.instprev == 'adjunto' && data.instalacion == 'adjunto') {
+                const cdmx = moment().tz("America/Mexico_City");
+                const email = new Promise((resolve, reject) => { 
+                    nodeoutlook.sendEmail({
+                        auth: {
+                            user: `${config.email1}`,
+                            pass: `${config.pass}`,
+                        }, from: `${config.email1}`,
+                        to: `${config.email3}`,
+            
+                        subject: `${data.proyecto} Documentos completos de la serie: ${data.sucursal} `,
+                        html: `<p>El ingeniero indica que se han completado los documentos de la serie ${data.sucursal}.</p>
+            
+                        <p>Día y hora de registro <b>${cdmx.format('LLL')}</b> </p>
+                        <hr>
+                        <b>Puedes consultar los documentos en el siguiente enlace</b> 
+                        <a href="https://mainbit.sharepoint.com/sites/mainstarbot">MainStarBot</a>
+                        <hr>
+                        <p>Datos de la serie:</p><br> 
+                        <b>Proyecto: ${data.proyecto}</b>  <br> 
+                        <b>Sucursal: ${data.sucursal}</b> <br> 
+                        
+                        <p>Un placer atenderle.</p>
+                        <p>Equipo Mainbit.</p>
+                        <hr>
+                        <img style="width:100%" src="https://raw.githubusercontent.com/esanchezlMBT/images/master/firma2020.jpg">
+                        `,
+                        onError: (e) => reject(console.log(e)),
+                        onSuccess: (i) => resolve(console.log(i))
+                        }
+                    );
+                    
+                });
                 
+                await email;
             } else {
                 
             }    
