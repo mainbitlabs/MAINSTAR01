@@ -41,7 +41,7 @@ class FotosDialog extends ComponentDialog {
         console.log('[FotosDialog]: choiceStep');
         const data = step.options;
         console.log(data);
-        var optsbutton = ['Iniciar Actividad','Rack', 'Inst. Previa', 'Instalación', 'Ticket'];
+        var optsbutton = ['Iniciar Actividad','Rack', 'Inst_Previa', 'Instalación', 'Ticket'];
         var Opts = {};
         
         return await step.prompt(CHOICE_PROMPT, {
@@ -65,7 +65,7 @@ class FotosDialog extends ComponentDialog {
             case 'Rack': 
                 return await step.prompt(ATTACH_PROMPT,`Adjunta aquí foto del **${data.choice}**`);
             
-            case 'Inst. Previa': 
+            case 'Inst_Previa': 
                    
                 return await step.prompt(ATTACH_PROMPT,`Adjunta aquí foto de **${data.choice}**`);
             
@@ -184,6 +184,11 @@ class FotosDialog extends ComponentDialog {
                 // return await step.repromptDialog(FOTOS_DIALOG, data);
                 return await step.beginDialog(FOTOS_DIALOG, data);
             case 'No':
+            if (data.Rack == 'adjunto' && data.ticket == 'adjunto' && data.instprev == 'adjunto' && data.instalacion == 'adjunto') {
+                
+            } else {
+                
+            }    
             await step.context.sendActivity('De acuerdo.');             
             // TERMINA EL DIÁLOGO
             return await step.endDialog();  

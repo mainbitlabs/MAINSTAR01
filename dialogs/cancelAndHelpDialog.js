@@ -32,16 +32,11 @@ class CancelAndHelpDialog extends ComponentDialog {
                     mainbit.text = 'Hola, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
                     await innerDc.context.sendActivity(mainbit);
                     return { status: DialogTurnStatus.waiting };
-                case 'starbucks':
-                    const sb = { type: ActivityTypes.Message };
-                   sb.attachments = [this.getStarbucks()];
-                    sb.text = 'Hola, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
-                    await innerDc.context.sendActivity(sb);
-                    return { status: DialogTurnStatus.waiting };
+                    
                 case 'bot':
                     const bot = { type: ActivityTypes.Message };
                    bot.attachments = [this.getBot()];
-                    bot.text = 'Hola humano, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
+                    bot.text = 'Hola, puedo ayudarte con información de la sucursal, registrar tu entrada y subir las fotos de tus actividades.'
                     await innerDc.context.sendActivity(bot);
                     return { status: DialogTurnStatus.waiting };
                      
@@ -74,13 +69,7 @@ class CancelAndHelpDialog extends ComponentDialog {
             contentUrl: 'https://raw.githubusercontent.com/esanchezlMBT/images/master/mainbit.jpg'
         }
     }
-    getStarbucks(){
-        return {
-            name:'starbucks',
-            contentType: 'image/jpg',
-            contentUrl: 'https://raw.githubusercontent.com/esanchezlMBT/images/master/sb.png'
-        }
-    }
+
 }
 
 module.exports.CancelAndHelpDialog = CancelAndHelpDialog;
